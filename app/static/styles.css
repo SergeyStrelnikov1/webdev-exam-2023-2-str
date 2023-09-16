@@ -32,8 +32,8 @@
 
 .score{
     position: absolute;
-    font-size: medium;
-    color: white;
+    font-size: 2rem;
+    font-weight: bold;
     top: 10px;
     left: 10px;
 }
@@ -41,7 +41,8 @@
 .genres{
     position: absolute;
     top: 10px;
+    font-size: 1.3rem;
+    font-weight: bold;
     right: 10px;
-    color: white;
     list-style: none;
 }

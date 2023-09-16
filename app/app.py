@@ -39,14 +39,14 @@ from models import Book, Cover
 def index():
     try:
         current_page = request.args.get('page', 1, type=int)
-        books = db.session.execute(db.select(Book).order_by(desc(Book.year)).limit(5).offset(5 * (current_page - 1))).scalars()
+        books = db.session.execute(db.select(Book).order_by(desc(Book.year)).limit(3).offset(3 * (current_page - 1))).scalars()
 
         books_markdown = []
         for book in books:
             book.brief = markdown.markdown(book.brief)
             books_markdown.append(book)
         book_count = Book.query.count()
-        page_count = math.ceil(book_count / 5) or 1
+        page_count = math.ceil(book_count / 3) or 1
                 
         return render_template(
             'index.html',
