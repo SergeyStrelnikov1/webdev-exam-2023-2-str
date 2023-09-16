@@ -1,0 +1,66 @@
+{% macro form(book=None, creating=False) %}
+<link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
+<script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
+<div class="container">
+    <form method="POST" action="{% if creating %} {{ url_for('books.create') }} {% else %} {{ url_for('books.edit',  book_id=book.id) }} {% endif %}" enctype="multipart/form-data">
+        <div class="container">
+
+            <div class="w-100 mb-2"></div>
+                <label for="author">Автор</label>
+                <input class="form-control flex-grow-1" name="author" id="author"  value="{{ book.author or '' }}">
+            </div>
+
+            <div class="w-100 mb-2">
+                <label for="name">Название</label>
+                <input class="form-control" name="name" id="name" value="{{ book.name or '' }}">
+            </div>
+
+            <div class="w-100 mb-2">
+                <label for="year">Год написания</label>
+                <input class="form-control" type="number" min="100" max="2024" name="year" id="year"  value="{{ book.year or '' }}">
+            </div>
+
+            <div class="w-100 mb-2">
+                <label for="publisher">Издательство</label>
+                <input class="form-control flex-grow-1" name="publisher" id="publisher"  value="{{ book.publisher or '' }}">
+            </div>
+
+            {% if creating %}
+                <div class="w-100 mb-2">
+                    <label for="cover">Обложка</label>
+                    <input class="form-control" type="file" name="cover" id="cover">
+                </div>
+            {% endif %}
+
+            <div class="w-100 mb-2">
+                <label for="brief">Описание</label>
+                <textarea id="brief" name="brief">{{ book.brief or '' }}</textarea>
+            </div>
+
+            <div id="genres">
+                {% if genres %}
+                <select class="form-select" multiple size="5" name="genre" id="genre">
+                    {% for genre in genres %}
+                    <option value="{{ genre.id }}">{{ genre.title }}</option>
+                    {% endfor %}
+                {% endif %}
+                </select>
+            </div>
+
+            <div class="w-100 mb-2">
+                <label for="page_number">Количество страниц</label>
+                <input class="form-control flex-grow-1" name="page_number" type="number" min="1" id="page_number"  value="{{ book.page_number or '' }}">
+            </div>
+            
+            <div class="mb-3 text-center">
+                <input type="submit" class="btn btn-dark" value="Сохранить">
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    const easyMDE = new EasyMDE({element: document.getElementById('brief')});
+</script>
+
+{% endmacro %}

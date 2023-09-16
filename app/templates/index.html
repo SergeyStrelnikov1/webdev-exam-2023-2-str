@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% from 'pagination.html' import pagination %}
+
+{% block content %}
+<div class="h-100 text-center d-flex flex-column p-3 bg-light">
+    <div class="w-100">
+        <h1 class="mb-2">Книги</h1>
+                
+        {% if current_user.is_authenticated %}
+            {% if current_user.is_administrator() %}
+                <a href="{{ url_for('books.create') }}" class="btn btn-primary">Добавить</a>
+            {% endif %}
+        {% endif %}
+    </div>
+
+    <div class="m-2">
+        <div class="d-flex flex-wrap justify-content-center">
+            {% if books %}
+                {% for book in books %}
+                    <div class="card mw-40 m-2">
+                        <img src="{{ book.cover.url }}" alt="book_img" class="rounded mx-auto d-block img-fluid w-400px">
+                        <span class="score">{{ book.score }}</span>
+                        <ul class="genres">
+                            {% for genre in book.genres %}
+                                <li>{{ genre }}</li>
+                            {% endfor %}
+                        </ul>
+                        <div class="card-body">
+                            <h5 class="card-title">{{ book.name }}. {{ book.year }}</h5>
+                            <hr>
+                            <h4 class="fw-light">{{ book.author }}</h4>
+                            <hr>
+                            <p class="card-text">{{ book.brief|safe }}</p>
+                                <a href="{{ url_for('books.show_book', book_id = book.id) }}" class="btn btn-primary">Подробнее</a>
+                                {% if current_user.is_authenticated %}
+                                    {% if current_user.is_administrator() or current_user.is_moderator() %}
+                                        <a href="{{ url_for('books.edit', book_id = book.id) }}" class="btn btn-secondary">Изменить</a>
+                                    {% endif %}
+                                {% endif %}
+                                {% if current_user.is_authenticated %}
+                                    {% if current_user.is_administrator() %}
+                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete"
+                                    data-url="{{ url_for('books.delete', book_id = book.id) }}" data-name="{{ book.name }}" >
+                                        Удалить
+                                      </button>
+                                    {% endif %}
+                                {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        
+        </div>
+        <div class="container d-flex justify-content-center mt-3">
+            {{pagination(page, page_count, request.endpoint)}}
+          </div>
+    </div>
+</div>
+{% if current_user.is_authenticated %}
+    {% if current_user.is_administrator() %}
+  
+  <div class="modal fade" id="delete" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body m-2">
+            <span>Удалить книгу "<span class="modal-text"></span>"?</span>
+        </div>
+        <div class="modal-footer">
+          <form action="" method="POST">
+            <input type="submit" id="submit" class="d-none">
+        </form>
+        <button type="submit" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+        <label for="submit" class="btn btn-danger">Удалить</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    {% endif %}
+{% endif %}
+<script src="{{ url_for('static', filename='modal.js')}}"></script>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+        <div class="card m-2">
+            <img src="{{ book.cover.url }}" alt="book_img" class="rounded mx-auto d-block img-fluid w-400px">
+            <span class="m-2">Рейтинг книги: {{ book.score }}</span>
+
+            <div class="card-body">
+                <h5>Название: {{ book.name }}. Год написания: {{ book.year }}</h5>
+                <hr>
+                <h4>Автор: {{ book.author }}</h4>
+                <hr>
+                <h3>Жанр(-ы)</h3>
+                <ul class="">
+                    {% for genre in book.genres %}
+                        <li>{{ genre }}</li>
+                    {% endfor %}
+                </ul>
+                <hr>
+
+                <p class="card-text">{{ book.brief|safe }}</p>
+
+            </div>
+        </div>
+        <h2 class="text-center">Рецензии:</h2>
+        <div class="text-center m-2">
+            {% if can_write %}
+                <a href="{{ url_for('reviews.create', book_id = book.id) }}" class="btn btn-primary text-center">Написать рецензию</a>
+            {% endif %}
+            </div>
+
+        <div class="d-flex flex-wrap justify-content-center mb-3">
+            {% if reviews %}
+                {% for review in reviews %}
+                <div class="card m-1" style="width: 18rem;">
+                    <div class="card-body">
+                      <h5 class="">Оценка: {{ review.score }}</h5>
+                      <h6 class="mb-2 ">Пользователь: {{ review.author }}</h6>
+                      <h6>{{ review.created_at }}</h6>
+                      <p class="card-text">{{ review.text | safe }}</p>
+                    </div>
+                  </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+</div>
+{% endblock %}
